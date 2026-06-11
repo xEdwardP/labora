@@ -22,6 +22,7 @@ model User {
 
   accounts Account[]
   sessions Session[]
+  projects  Project[]
 
   @@map("users")
 }
@@ -69,4 +70,44 @@ model VerificationToken {
 enum Role {
   CLIENT
   FREELANCER
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @db.Text
+  category    Category
+  budget      Float
+  budgetType  BudgetType    @default(FIXED)
+  status      ProjectStatus @default(OPEN)
+  clientId    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+enum Category {
+  IT_PROGRAMMING
+  DESIGN_MULTIMEDIA
+  WRITING_TRANSLATION
+  SALES_MARKETING
+  FINANCE_MANAGEMENT
+  LEGAL
+  ADMIN_SUPPORT
+  ENGINEERING
+}
+
+enum BudgetType {
+  FIXED
+  HOURLY
+}
+
+enum ProjectStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
