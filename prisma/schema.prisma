@@ -7,6 +7,8 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─── Modelos de Auth (Sprint 1) ───────────────────────────
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -20,9 +22,14 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  projects  Project[]
+  accounts      Account[]
+  sessions      Session[]
+  projects      Project[]
+  proposals     Proposal[]
+  profile       Profile?
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  notifications    Notification[]
 
   @@map("users")
 }
@@ -67,10 +74,7 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-enum Role {
-  CLIENT
-  FREELANCER
-}
+// ─── Proyectos (Sprint 2) ─────────────────────────────────
 
 model Project {
   id          String        @id @default(cuid())
@@ -84,9 +88,92 @@ model Project {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client    User       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  proposals Proposal[]
+  messages  Message[]
 
   @@map("projects")
+}
+
+// ─── Propuestas (Sprint 3) ────────────────────────────────
+
+model Proposal {
+  id             String         @id @default(cuid())
+  projectId      String
+  freelancerId   String
+  amount         Float
+  estimatedDays  Int
+  message        String         @db.Text
+  status         ProposalStatus @default(PENDING)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  freelancer User    @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, freelancerId])
+  @@map("proposals")
+}
+
+// ─── Perfil (Sprint 4) ────────────────────────────────────
+
+model Profile {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  avatarUrl  String?
+  bio        String?  @db.Text
+  skills     String[]
+  portfolio  String[]
+  country    String?
+  hourlyRate Float?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+// ─── Mensajería (Sprint 5) ────────────────────────────────
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String   @db.Text
+  senderId   String
+  receiverId String
+  projectId  String
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User    @relation("SentMessages",     fields: [senderId],   references: [id], onDelete: Cascade)
+  receiver User    @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  project  Project @relation(fields: [projectId], references: [id],    onDelete: Cascade)
+
+  @@map("messages")
+}
+
+// ─── Notificaciones (Sprint 5) ────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String
+  read      Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// ─── Enums ────────────────────────────────────────────────
+
+enum Role {
+  CLIENT
+  FREELANCER
 }
 
 enum Category {
@@ -110,4 +197,18 @@ enum ProjectStatus {
   IN_PROGRESS
   COMPLETED
   CANCELLED
+}
+
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum NotificationType {
+  NEW_PROPOSAL
+  PROPOSAL_ACCEPTED
+  PROPOSAL_REJECTED
+  NEW_MESSAGE
+  PROJECT_COMPLETED
 }
