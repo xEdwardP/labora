@@ -14,9 +14,7 @@ export async function registerUser(data: {
     where: { email: data.email },
   })
 
-  if (exists) {
-    return { error: 'El email ya está registrado' }
-  }
+  if (exists) return { error: 'El email ya está registrado' }
 
   const hashedPassword = await bcrypt.hash(data.password, 12)
 
@@ -28,7 +26,11 @@ export async function registerUser(data: {
     },
   })
 
-  return { success: 'Cuenta creada exitosamente' }
+  await signIn('credentials', {
+    email: data.email,
+    password: data.password,
+    redirectTo: '/home',
+  })
 }
 
 export async function loginUser(data: {
@@ -50,6 +52,6 @@ export async function loginUser(data: {
           return { error: 'Algo salió mal' }
       }
     }
-    throw error // Dejar que Next.js maneje el redirect
+    throw error
   }
 }
