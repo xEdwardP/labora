@@ -3,9 +3,24 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Mail, Lock, Loader2 } from "lucide-react";
+import { Briefcase, Loader2, Lock, Mail, User, Users } from "lucide-react";
 import { toast } from "sonner";
 import { registerUser } from "@/actions/auth";
+
+const roles = [
+  {
+    value: "CLIENT",
+    label: "Cliente",
+    description: "Quiero publicar proyectos",
+    icon: Briefcase,
+  },
+  {
+    value: "FREELANCER",
+    label: "Freelancer",
+    description: "Quiero enviar propuestas",
+    icon: Users,
+  },
+];
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -15,6 +30,7 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "CLIENT",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,6 +65,52 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+              Tipo de cuenta
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {roles.map(({ value, label, description, icon: Icon }) => {
+                const selected = formData.role === value;
+
+                return (
+                  <label
+                    key={value}
+                    className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors ${
+                      selected
+                        ? "border-blue-600 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-300"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="role"
+                      value={value}
+                      checked={selected}
+                      onChange={(e) =>
+                        setFormData({ ...formData, role: e.target.value })
+                      }
+                      className="sr-only"
+                    />
+                    <Icon
+                      className={`mt-0.5 h-5 w-5 ${
+                        selected ? "text-blue-600" : "text-gray-400"
+                      }`}
+                    />
+                    <span>
+                      <span className="block text-sm font-semibold text-gray-900">
+                        {label}
+                      </span>
+                      <span className="block text-xs text-gray-500">
+                        {description}
+                      </span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
           {[
             {
               label: "Nombre",

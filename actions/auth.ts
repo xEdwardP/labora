@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { Role } from '@/app/generated/prisma/client'
 import bcrypt from 'bcryptjs'
 import { signIn } from '@/auth'
 import { AuthError } from 'next-auth'
@@ -9,7 +10,10 @@ export async function registerUser(data: {
   name: string
   email: string
   password: string
+  role: string
 }) {
+  const role = data.role === Role.FREELANCER ? Role.FREELANCER : Role.CLIENT
+
   const exists = await prisma.user.findUnique({
     where: { email: data.email },
   })
@@ -23,6 +27,7 @@ export async function registerUser(data: {
       name: data.name,
       email: data.email,
       password: hashedPassword,
+      role,
     },
   })
 
