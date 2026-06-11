@@ -1,19 +1,13 @@
-import { auth } from '@/auth'
-import { redirect } from 'next/navigation'
 import Navbar from '@/components/landing/Navbar'
 import Hero from '@/components/landing/Hero'
-import TrustBar from '@/components/landing/TrustBar'
 import Categories from '@/components/landing/Categories'
 import HowItWorks from '@/components/landing/HowItWorks'
 import FeaturedFreelancers from '@/components/landing/FeaturedFreelancers'
 import CtaBanner from '@/components/landing/CtaBanner'
 import Footer from '@/components/landing/Footer'
+import TrustBar from '@/components/landing/TrustBar'
 
-export default async function RootPage() {
-  const session = await auth()
-
-  if (session) redirect('/home')
-
+export default function LandingPage() {
   return (
     <main style={{ background: '#f4f4f4' }}>
       <Navbar />
