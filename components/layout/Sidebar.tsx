@@ -1,107 +1,201 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import {
   Home,
-  Settings,
-  HelpCircle,
-  LogOut,
-  ChevronLeft,
   Briefcase,
+  FolderOpen,
+  FileText,
+  Users,
+  UserCircle,
+  Bell,
+  ChevronLeft,
+  ChevronRight,
+  LogOut,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
-import { useState } from 'react'
 
-const navItems = [
-  { href: '/home',     label: 'Inicio',    icon: Home },
-  { href: '/projects', label: 'Proyectos', icon: Briefcase },
-  { href: '/dashboard/settings', label: 'Configuración', icon: Settings },
-]
-
-const bottomItems = [
-  { href: '/help', label: 'Ayuda', icon: HelpCircle },
+const allNavItems = [
+  { href: '/home',          label: 'Home',           icon: Home,        role: null           },
+  { href: '/projects',      label: 'Projects',       icon: Briefcase,   role: null           },
+  { href: '/my-projects',   label: 'My Projects',    icon: FolderOpen,  role: 'CLIENT'       },
+  { href: '/my-proposals',  label: 'My Proposals',   icon: FileText,    role: 'FREELANCER'   },
+  { href: '/freelancers',   label: 'Freelancers',    icon: Users,       role: null           },
+  { href: '/profile/edit',  label: 'My Profile',     icon: UserCircle,  role: null           },
+  { href: '/notifications', label: 'Notifications',  icon: Bell,        role: null           },
 ]
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const { data: session } = useSession()
   const [collapsed, setCollapsed] = useState(false)
 
+  const role = session?.user?.role ?? null
+
+  const navItems = allNavItems.filter(
+    (item) => item.role === null || item.role === role
+  )
+
   return (
-    <aside
-      className={`
-        h-screen bg-gray-900 text-white flex flex-col
-        transition-all duration-300 relative
-        ${collapsed ? 'w-16' : 'w-64'}
-      `}
-    >
-      {/* Toggle button */}
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-6 bg-gray-900 border border-gray-700 rounded-full p-1 z-10"
-      >
-        <ChevronLeft
-          className={`w-3 h-3 transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`}
-        />
-      </button>
+    <aside style={{
+      width: collapsed ? 68 : 230,
+      minHeight: '100vh',
+      background: 'white',
+      borderRight: '1px solid #efefef',
+      display: 'flex',
+      flexDirection: 'column',
+      transition: 'width 0.2s ease',
+      position: 'relative',
+      flexShrink: 0,
+    }}>
 
       {/* Logo */}
-      <div className="p-4 border-b border-gray-800 flex items-center gap-3 h-16">
-        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-          <span className="text-sm font-bold">B</span>
-        </div>
+      <div style={{
+        padding: collapsed ? '24px 0' : '24px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: collapsed ? 'center' : 'flex-start',
+        borderBottom: '1px solid #f0f0f0',
+      }}>
         {!collapsed && (
-          <span className="font-semibold text-lg truncate">Boilerplate</span>
+          <span style={{ fontSize: 20, fontWeight: 800, color: '#6B2FDB' }}>
+            Labora
+          </span>
+        )}
+        {collapsed && (
+          <span style={{ fontSize: 20, fontWeight: 800, color: '#6B2FDB' }}>L</span>
         )}
       </div>
 
-      {/* Nav principal */}
-      <nav className="flex-1 p-3 space-y-1">
-        {navItems.map(({ href, label, icon: Icon }) => {
-          const isActive = pathname === href
+      {/* Nav items */}
+      <nav style={{ flex: 1, padding: '16px 0', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {navItems.map(({ href, label, icon: Icon, role: itemRole }) => {
+          const isActive = pathname === href || pathname.startsWith(href + '/')
           return (
             <Link
               key={href}
               href={href}
               title={collapsed ? label : undefined}
-              className={`
-                flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm
-                ${isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-                }
-              `}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                padding: collapsed ? '11px 0' : '11px 20px',
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                margin: '0 8px',
+                borderRadius: 8,
+                textDecoration: 'none',
+                background: isActive ? '#f3eeff' : 'transparent',
+                color: isActive ? '#6B2FDB' : '#555',
+                fontWeight: isActive ? 600 : 400,
+                fontSize: 14,
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive)
+                  (e.currentTarget as HTMLAnchorElement).style.background = '#f9f6ff'
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive)
+                  (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'
+              }}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <Icon size={18} strokeWidth={isActive ? 2.2 : 1.8} />
               {!collapsed && <span>{label}</span>}
             </Link>
           )
         })}
       </nav>
 
-      {/* Parte inferior */}
-      <div className="p-3 border-t border-gray-800 space-y-1">
-        {bottomItems.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            title={collapsed ? label : undefined}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors text-sm"
-          >
-            <Icon className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span>{label}</span>}
-          </Link>
-        ))}
+      {/* User info + logout */}
+      <div style={{
+        borderTop: '1px solid #f0f0f0',
+        padding: collapsed ? '16px 0' : '16px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        justifyContent: collapsed ? 'center' : 'flex-start',
+      }}>
+        {/* Avatar */}
+        {session?.user?.image ? (
+          <img
+            src={session.user.image}
+            alt={session.user.name ?? ''}
+            style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+          />
+        ) : (
+          <div style={{
+            width: 34, height: 34, borderRadius: '50%',
+            background: '#ede7f6', display: 'flex',
+            alignItems: 'center', justifyContent: 'center',
+            fontWeight: 700, color: '#6B2FDB', fontSize: 14,
+            flexShrink: 0,
+          }}>
+            {(session?.user?.name ?? session?.user?.email ?? 'U')[0].toUpperCase()}
+          </div>
+        )}
 
-        <button
-          onClick={() => signOut({ callbackUrl: '/login' })}
-          title={collapsed ? 'Cerrar sesión' : undefined}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-red-900/40 hover:text-red-400 transition-colors text-sm"
-        >
-          <LogOut className="w-5 h-5 flex-shrink-0" />
-          {!collapsed && <span>Cerrar sesión</span>}
-        </button>
+        {!collapsed && (
+          <>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <p style={{
+                fontSize: 13, fontWeight: 600, color: '#1a1a2e',
+                margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              }}>
+                {session?.user?.name ?? 'User'}
+              </p>
+              <p style={{ fontSize: 11, color: '#aaa', margin: 0 }}>
+                {role === 'CLIENT' ? 'Client' : 'Freelancer'}
+              </p>
+            </div>
+            <button
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              title="Sign out"
+              style={{
+                background: 'none', border: 'none',
+                cursor: 'pointer', color: '#bbb',
+                padding: 4, borderRadius: 6,
+                display: 'flex', alignItems: 'center',
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = '#ef4444'
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = '#bbb'
+              }}
+            >
+              <LogOut size={16} />
+            </button>
+          </>
+        )}
       </div>
+
+      {/* Collapse toggle */}
+      <button
+        onClick={() => setCollapsed((prev) => !prev)}
+        style={{
+          position: 'absolute',
+          top: 28,
+          right: -12,
+          width: 24, height: 24,
+          borderRadius: '50%',
+          background: 'white',
+          border: '1px solid #e0e0e0',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#6B2FDB',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+          zIndex: 10,
+        }}
+      >
+        {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+      </button>
+
     </aside>
   )
 }
