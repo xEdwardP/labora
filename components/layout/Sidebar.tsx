@@ -19,13 +19,13 @@ import {
 import { signOut } from 'next-auth/react'
 
 const allNavItems = [
-  { href: '/home',          label: 'Home',           icon: Home,        role: null           },
-  { href: '/projects',      label: 'Projects',       icon: Briefcase,   role: null           },
-  { href: '/my-projects',   label: 'My Projects',    icon: FolderOpen,  role: 'CLIENT'       },
-  { href: '/my-proposals',  label: 'My Proposals',   icon: FileText,    role: 'FREELANCER'   },
+  { href: '/home',          label: 'Inicio',           icon: Home,        role: null           },
+  { href: '/projects',      label: 'Proyectos',       icon: Briefcase,   role: null           },
+  { href: '/my-projects',   label: 'Mis Proyectos',    icon: FolderOpen,  role: 'CLIENT'       },
+  { href: '/my-proposals',  label: 'Mis Propuestas',   icon: FileText,    role: 'FREELANCER'   },
   { href: '/freelancers',   label: 'Freelancers',    icon: Users,       role: null           },
-  { href: '/profile/edit',  label: 'My Profile',     icon: UserCircle,  role: null           },
-  { href: '/notifications', label: 'Notifications',  icon: Bell,        role: null           },
+  { href: '/profile/edit',  label: 'Mi Perfil',     icon: UserCircle,  role: null           },
+  // { href: '/notifications', label: 'Notificaciones',  icon: Bell,        role: null           },
 ]
 
 export default function Sidebar() {
