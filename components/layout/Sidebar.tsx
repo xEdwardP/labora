@@ -5,21 +5,17 @@ import { usePathname } from 'next/navigation'
 import {
   Home,
   Settings,
-  Users,
-  BarChart3,
-  Bell,
   HelpCircle,
   LogOut,
   ChevronLeft,
+  Briefcase,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 
 const navItems = [
-  { href: '/home', label: 'Inicio', icon: Home },
-  { href: '/dashboard/analytics', label: 'Analíticas', icon: BarChart3 },
-  { href: '/dashboard/users', label: 'Usuarios', icon: Users },
-  { href: '/dashboard/notifications', label: 'Notificaciones', icon: Bell },
+  { href: '/home',     label: 'Inicio',    icon: Home },
+  { href: '/projects', label: 'Proyectos', icon: Briefcase },
   { href: '/dashboard/settings', label: 'Configuración', icon: Settings },
 ]
 
