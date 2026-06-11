@@ -36,10 +36,10 @@ export default async function MyProjectsPage() {
     <div style={{ padding: '40px 24px', maxWidth: 900, margin: '0 auto' }}>
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a2e', marginBottom: 6 }}>
-          My Projects
+          Mis Proyectos
         </h1>
         <p style={{ color: '#888', fontSize: 14 }}>
-          Review proposals and manage your active projects
+          Revisa las propuestas y gestiona tus proyectos activos
         </p>
       </div>
 

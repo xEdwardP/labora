@@ -31,10 +31,10 @@ export default async function MyProposalsPage() {
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a2e', marginBottom: 6 }}>
-          My Proposals
+          Mis Propuestas
         </h1>
         <p style={{ color: '#888', fontSize: 14 }}>
-          Track the status of all your submitted proposals
+          Rastrea el estado de todas tus propuestas enviadas
         </p>
       </div>
 
@@ -77,8 +77,8 @@ export default async function MyProposalsPage() {
           gap: 12,
         }}>
           <FileText size={40} color="#d0c4f0" />
-          <p style={{ fontSize: 15, fontWeight: 600, color: '#999' }}>No proposals yet</p>
-          <p style={{ fontSize: 13 }}>Browse projects and send your first proposal</p>
+          <p style={{ fontSize: 15, fontWeight: 600, color: '#999' }}>Ninguna propuesta aún</p>
+          <p style={{ fontSize: 13 }}>Explora proyectos y envía tu primera propuesta</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

@@ -54,8 +54,8 @@ export default function MyProjectsClient({ projects, proposalsMap }: Props) {
         gap: 14,
       }}>
         <FolderOpen size={44} color="#d0c4f0" />
-        <p style={{ fontSize: 15, fontWeight: 600, color: '#999' }}>No projects yet</p>
-        <p style={{ fontSize: 13, color: '#bbb' }}>Post your first project to start receiving proposals</p>
+        <p style={{ fontSize: 15, fontWeight: 600, color: '#999' }}>Ningún proyecto publicado</p>
+        <p style={{ fontSize: 13, color: '#bbb' }}>Publica tu primer proyecto para comenzar a recibir propuestas</p>
         <button
           onClick={() => router.push('/projects/new')}
           style={{
@@ -74,7 +74,7 @@ export default function MyProjectsClient({ projects, proposalsMap }: Props) {
           }}
         >
           <Plus size={16} />
-          Post a Project
+          Publicar un proyecto
         </button>
       </div>
     )
@@ -128,7 +128,7 @@ export default function MyProjectsClient({ projects, proposalsMap }: Props) {
                   <span>${project.budget.toLocaleString()} {project.budgetType === 'HOURLY' ? '/hr' : 'fixed'}</span>
                   <span>·</span>
                   <span>
-                    {proposals.length} proposal{proposals.length !== 1 ? 's' : ''}
+                    {proposals.length} propuesta{proposals.length !== 1 ? 's' : ''}
                     {pendingCount > 0 && (
                       <span style={{
                         marginLeft: 6,
@@ -139,7 +139,7 @@ export default function MyProjectsClient({ projects, proposalsMap }: Props) {
                         borderRadius: 10,
                         fontSize: 11,
                       }}>
-                        {pendingCount} pending
+                        {pendingCount} pendiente
                       </span>
                     )}
                   </span>
@@ -163,7 +163,7 @@ export default function MyProjectsClient({ projects, proposalsMap }: Props) {
               }}>
                 {proposals.length === 0 ? (
                   <p style={{ fontSize: 13, color: '#bbb', textAlign: 'center', padding: '20px 0' }}>
-                    No proposals received yet
+                    Ninguna propuesta aún. Comparte tu proyecto para atraer a los mejores freelancers.
                   </p>
                 ) : (
                   proposals.map((proposal) => (
